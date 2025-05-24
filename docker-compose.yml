@@ -1,0 +1,29 @@
+################################################################################
+# Node-RED Compose
+################################################################################
+# docker-compose -f docker-compose.yml up -d
+################################################################################
+
+services:
+  node-red-alexa:
+    image: node-red-alexa
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3456:3456
+    environment:
+      - TZ=America/Chicago
+    networks:
+      - traefik-net
+    volumes:
+      - node-red-alexa:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.alexa-ui.rule=Host(`$HOSTNAME`)"
+volumes:
+  node-red-alexa:
+networks:
+  traefik-net:
+    external: true
+   
