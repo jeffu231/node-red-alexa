@@ -1,0 +1,608 @@
+[
+    {
+        "id": "fcfb183ee7a46e90",
+        "type": "tab",
+        "label": "Alexa Control",
+        "disabled": false,
+        "info": "Using node-red-contrib-alexa-smart-home",
+        "env": []
+    },
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Alexa Speak",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9867a1a36c2b45a9",
+        "type": "tab",
+        "label": "Remote Falcon Announce",
+        "disabled": false,
+        "info": "Annoucement of songs requested in RF to Alexa\n",
+        "env": []
+    },
+    {
+        "id": "8e9355bd69e63e56",
+        "type": "alexa-remote-account",
+        "name": "",
+        "authMethod": "proxy",
+        "proxyOwnIp": "docker01.home.kb9kld.org",
+        "proxyPort": "3456",
+        "cookieFile": "/data/alexa-auth/amazon.txt",
+        "refreshInterval": "3",
+        "alexaServiceHost": "pitangui.amazon.com",
+        "pushDispatchHost": "",
+        "amazonPage": "amazon.com",
+        "acceptLanguage": "en-US",
+        "onKeywordInLanguage": "on",
+        "userAgent": "",
+        "usePushConnection": "on",
+        "autoInit": "on",
+        "autoQueryActivityOnTrigger": "off"
+    },
+    {
+        "id": "91363f75718d973a",
+        "type": "mqtt-broker",
+        "name": "smarthome MQTT",
+        "broker": "mqtt.home.kb9kld.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "6532368b6d609a6f",
+        "type": "alexa-smart-home-v3-conf",
+        "username": "alexaha",
+        "mqttserver": "mq-red.cb-net.co.uk",
+        "webapiurl": "red.cb-net.co.uk",
+        "contextName": "memory"
+    },
+    {
+        "id": "b5f274682edaf4cb",
+        "type": "alexa-smart-home-v3",
+        "z": "fcfb183ee7a46e90",
+        "conf": "6532368b6d609a6f",
+        "device": "69830",
+        "acknowledge": true,
+        "name": "Water Fountain",
+        "topic": "9_barbarotto/automation/ha/alexa/switch/sw_fountain",
+        "x": 140,
+        "y": 340,
+        "wires": [
+            [
+                "bcbf159726d1b018"
+            ]
+        ]
+    },
+    {
+        "id": "1c3cd7c22ca0604c",
+        "type": "mqtt out",
+        "z": "fcfb183ee7a46e90",
+        "name": "Publish Device Message",
+        "topic": "",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "91363f75718d973a",
+        "x": 850,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "bcbf159726d1b018",
+        "type": "function",
+        "z": "fcfb183ee7a46e90",
+        "name": "Lower case payload",
+        "func": "msg.payload = msg.payload.toLowerCase();\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 340,
+        "wires": [
+            [
+                "1c3cd7c22ca0604c"
+            ]
+        ]
+    },
+    {
+        "id": "c5c0709add2ae284",
+        "type": "alexa-smart-home-v3-state",
+        "z": "fcfb183ee7a46e90",
+        "conf": "6532368b6d609a6f",
+        "device": "69830",
+        "name": "Water Fountain",
+        "x": 600,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "01c03ef7ebfaba69",
+        "type": "comment",
+        "z": "fcfb183ee7a46e90",
+        "name": "Website",
+        "info": "Main site\nhttps://docs.cb-net.co.uk\n\nDevices setup\nhttps://red.cb-net.co.uk/devices",
+        "x": 130,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "d1c87ae45906a74a",
+        "type": "mqtt in",
+        "z": "fcfb183ee7a46e90",
+        "name": "Water Fountain State",
+        "topic": "9_barbarotto/automation/sw-fountain/status/switch:0",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "91363f75718d973a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 420,
+        "wires": [
+            [
+                "9f6bb9e3c96723a4"
+            ]
+        ]
+    },
+    {
+        "id": "9f6bb9e3c96723a4",
+        "type": "function",
+        "z": "fcfb183ee7a46e90",
+        "name": "Compose State Payload",
+        "func": "var state = msg.payload.output=true?\"ON\":\"OFF\";\n\nvar newMsg = {\n    \"acknowledge\": true,\n    \"payload\": {\n        \"state\": {\n            \"power\": state\n        }\n    }\n};\nmsg.payload = newMsg;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 420,
+        "wires": [
+            [
+                "c5c0709add2ae284"
+            ]
+        ]
+    },
+    {
+        "id": "f274d3907aa1cd9b",
+        "type": "alexa-smart-home-v3",
+        "z": "fcfb183ee7a46e90",
+        "conf": "6532368b6d609a6f",
+        "device": "69848",
+        "acknowledge": true,
+        "name": "Living Room Lamp",
+        "topic": "9_barbarotto/automation/ha/alexa/switch/ps_1_indoor",
+        "x": 150,
+        "y": 280,
+        "wires": [
+            [
+                "08708131b463ab67"
+            ]
+        ]
+    },
+    {
+        "id": "08708131b463ab67",
+        "type": "function",
+        "z": "fcfb183ee7a46e90",
+        "name": "Lower case payload",
+        "func": "msg.payload = msg.payload.toLowerCase();\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 280,
+        "wires": [
+            [
+                "1c3cd7c22ca0604c"
+            ]
+        ]
+    },
+    {
+        "id": "8fc643b4fb4850a2",
+        "type": "alexa-smart-home-v3",
+        "z": "fcfb183ee7a46e90",
+        "conf": "6532368b6d609a6f",
+        "device": "69849",
+        "acknowledge": true,
+        "name": "Living Room Corner Lamp",
+        "topic": "9_barbarotto/automation/ha/alexa/switch/ps_2_indoor",
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "864a354c1e9067a5"
+            ]
+        ]
+    },
+    {
+        "id": "864a354c1e9067a5",
+        "type": "function",
+        "z": "fcfb183ee7a46e90",
+        "name": "Lower case payload",
+        "func": "msg.payload = msg.payload.toLowerCase();\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 220,
+        "wires": [
+            [
+                "1c3cd7c22ca0604c"
+            ]
+        ]
+    },
+    {
+        "id": "54c2a98b9843c4ea",
+        "type": "alexa-smart-home-v3",
+        "z": "fcfb183ee7a46e90",
+        "conf": "6532368b6d609a6f",
+        "device": "69850",
+        "acknowledge": true,
+        "name": "Ice Maker",
+        "topic": "9_barbarotto/automation/ha/alexa/switch/sw_ice_maker",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "df9464ec7d1a1948"
+            ]
+        ]
+    },
+    {
+        "id": "df9464ec7d1a1948",
+        "type": "function",
+        "z": "fcfb183ee7a46e90",
+        "name": "Lower case payload",
+        "func": "msg.payload = msg.payload.toLowerCase();\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 160,
+        "wires": [
+            [
+                "1c3cd7c22ca0604c"
+            ]
+        ]
+    },
+    {
+        "id": "3cc11d24.ff01a2",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 350,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "abcc9bfbf25f12c6",
+        "type": "alexa-remote-routine",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "account": "8e9355bd69e63e56",
+        "routineNode": {
+            "type": "speak",
+            "payload": {
+                "type": "regular",
+                "text": {
+                    "type": "msg",
+                    "value": "payload"
+                },
+                "devices": [
+                    "G2A0P30774550LQ0"
+                ]
+            }
+        },
+        "x": 460,
+        "y": 380,
+        "wires": [
+            [
+                "e8fec4b6bc4a6e60"
+            ]
+        ]
+    },
+    {
+        "id": "f81b8b592f7a11d5",
+        "type": "mqtt in",
+        "z": "f6f2187d.f17ca8",
+        "name": "Alexa Speak",
+        "topic": "9_barbarotto/smarthome/alexa/speak",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "91363f75718d973a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 380,
+        "wires": [
+            [
+                "abcc9bfbf25f12c6"
+            ]
+        ]
+    },
+    {
+        "id": "e8fec4b6bc4a6e60",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Speak Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "50a47d35ffc24e54",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"type\":\"speak\",\"payload\":{\"type\":\"regular\",\"text\":\"Hello!\",\"devices\":[\"Everywhere\"]}}",
+        "payloadType": "json",
+        "x": 250,
+        "y": 640,
+        "wires": [
+            [
+                "62ae5154328364a3"
+            ]
+        ]
+    },
+    {
+        "id": "62ae5154328364a3",
+        "type": "alexa-remote-routine",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "account": "8e9355bd69e63e56",
+        "routineNode": {
+            "type": "custom",
+            "payload": {
+                "type": "msg",
+                "value": "payload"
+            }
+        },
+        "x": 480,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "29290f920f4aaadb",
+        "type": "mqtt in",
+        "z": "9867a1a36c2b45a9",
+        "name": "RF Playlist Published",
+        "topic": "9_barbarotto/lightshow/falcon/player/fpp2/playlist/name/status",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "91363f75718d973a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 220,
+        "y": 300,
+        "wires": [
+            [
+                "3983b9b27e5bea55"
+            ]
+        ]
+    },
+    {
+        "id": "3983b9b27e5bea55",
+        "type": "delay",
+        "z": "9867a1a36c2b45a9",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 400,
+        "y": 300,
+        "wires": [
+            [
+                "aa5079296bec89cf",
+                "2d08c56eb4210886"
+            ]
+        ]
+    },
+    {
+        "id": "7a81d1753bb36e79",
+        "type": "mqtt in",
+        "z": "9867a1a36c2b45a9",
+        "name": "Now Playing",
+        "topic": "9_barbarotto/lightshow/falcon/player/fpp2/playlist/media/title",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "91363f75718d973a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 360,
+        "wires": [
+            [
+                "191b10aaf1f63248"
+            ]
+        ]
+    },
+    {
+        "id": "191b10aaf1f63248",
+        "type": "function",
+        "z": "9867a1a36c2b45a9",
+        "name": "Store now playing",
+        "func": "flow.set(\"now-playing\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 360,
+        "wires": [
+            [
+                "57a45dec659fcb77"
+            ]
+        ]
+    },
+    {
+        "id": "1187df3d8039b476",
+        "type": "debug",
+        "z": "9867a1a36c2b45a9",
+        "name": "Speak Text",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "aa5079296bec89cf",
+        "type": "function",
+        "z": "9867a1a36c2b45a9",
+        "name": "Compose Speak",
+        "func": "\nnode.warn(\"info\");\n\nnode.warn(\"Now Playing \" + flow.get(\"now-playing\"));\n\nif (msg.payload == \"Christmas - Remote Falcon\" \n    && flow.get(\"now-playing\") != \"Announcement\"){\n    msg.payload = flow.get(\"now-playing\") + \" Requested\"\n    return msg;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 300,
+        "wires": [
+            [
+                "1187df3d8039b476",
+                "1cf158da9f538adc"
+            ]
+        ]
+    },
+    {
+        "id": "57a45dec659fcb77",
+        "type": "debug",
+        "z": "9867a1a36c2b45a9",
+        "name": "Media Title",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "2d08c56eb4210886",
+        "type": "debug",
+        "z": "9867a1a36c2b45a9",
+        "name": "Playlist Update",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "1cf158da9f538adc",
+        "type": "mqtt out",
+        "z": "9867a1a36c2b45a9",
+        "name": "Publish Speak",
+        "topic": "9_barbarotto/smarthome/alexa/speak",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "91363f75718d973a",
+        "x": 880,
+        "y": 360,
+        "wires": []
+    }
+]
