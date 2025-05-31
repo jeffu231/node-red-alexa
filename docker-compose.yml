@@ -6,6 +6,8 @@
 
 services:
   node-red-alexa:
+    container_name: node-red-alexa
+    restart: unless-stopped
     image: node-red-alexa
     build:
       context: .
